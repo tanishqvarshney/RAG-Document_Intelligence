@@ -347,12 +347,9 @@ export default function Sidebar({ user, onLogout, selectedDocIds, onSelectionCha
         borderTop: '1px solid var(--border-color)',
       }}>
         {/* Theme Switcher */}
-        <div style={{ marginBottom: 10 }}>
-          <p style={{
-            fontSize: 10, fontWeight: 600, color: 'var(--text-muted)',
-            letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8
-          }}>Theme</p>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+          <span style={{ fontSize: 10, color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.06em', textTransform: 'uppercase', flexShrink: 0 }}>Theme</span>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
             {THEMES.map((t) => {
               const isActive = activeTheme === t.id;
               return (
@@ -361,48 +358,18 @@ export default function Sidebar({ user, onLogout, selectedDocIds, onSelectionCha
                   title={t.label}
                   onClick={() => setActiveTheme(t.id)}
                   style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 7,
-                    padding: '7px 9px',
-                    borderRadius: 10,
-                    border: isActive
-                      ? `1.5px solid ${t.color1}88`
-                      : '1.5px solid var(--border-color)',
-                    background: isActive
-                      ? `linear-gradient(135deg, ${t.color1}22, ${t.color2}22)`
-                      : 'var(--bg-card)',
+                    width: 14, height: 14,
+                    borderRadius: '50%',
+                    background: t.color1,
+                    border: isActive ? `2px solid rgba(255,255,255,0.8)` : '2px solid transparent',
+                    outline: isActive ? `1px solid ${t.color1}66` : 'none',
+                    outlineOffset: 1,
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease',
-                    boxShadow: isActive ? `0 0 12px ${t.color1}44` : 'none',
-                    transform: isActive ? 'scale(1.03)' : 'scale(1)',
-                    position: 'relative',
-                    overflow: 'hidden',
-                  }}
-                >
-                  {/* Gradient Swatch */}
-                  <div style={{
-                    width: 20, height: 20,
-                    borderRadius: 6,
-                    background: `linear-gradient(135deg, ${t.color1}, ${t.color2})`,
+                    transition: 'all 0.15s ease',
+                    padding: 0,
                     flexShrink: 0,
-                    boxShadow: isActive ? `0 0 6px ${t.color1}88` : 'none',
-                  }} />
-                  <span style={{
-                    fontSize: 11,
-                    fontWeight: isActive ? 600 : 500,
-                    color: isActive ? t.color1 : 'var(--text-secondary)',
-                    whiteSpace: 'nowrap',
-                  }}>{t.label}</span>
-                  {isActive && (
-                    <span style={{
-                      marginLeft: 'auto',
-                      fontSize: 9,
-                      color: t.color1,
-                      fontWeight: 700,
-                    }}>✓</span>
-                  )}
-                </button>
+                  }}
+                />
               );
             })}
           </div>
