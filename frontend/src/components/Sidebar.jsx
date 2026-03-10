@@ -14,10 +14,10 @@ import { addToast } from '../App';
 
 // ── Themes ────────────────────────────────────────────────────────────────────
 const THEMES = [
-  { id: 'dark', label: '🌑 Dark', color: '#4f8ef7' },
-  { id: 'ocean', label: '🌊 Ocean', color: '#64ffda' },
-  { id: 'sunset', label: '🌅 Sunset', color: '#ff6b6b' },
-  { id: 'forest', label: '🌿 Forest', color: '#34d399' },
+  { id: 'dark', emoji: '🌑', label: 'Dark', color1: '#4f8ef7', color2: '#7c4dff' },
+  { id: 'ocean', emoji: '🌊', label: 'Ocean', color1: '#64ffda', color2: '#00b4d8' },
+  { id: 'sunset', emoji: '🌅', label: 'Sunset', color1: '#ff6b6b', color2: '#ffa07a' },
+  { id: 'forest', emoji: '🌿', label: 'Forest', color1: '#34d399', color2: '#6ee7b7' },
 ];
 
 const FILE_ICONS = { pdf: '📄', docx: '📝', doc: '📝', csv: '📊' };
@@ -350,31 +350,61 @@ export default function Sidebar({ user, onLogout, selectedDocIds, onSelectionCha
         <div style={{ marginBottom: 10 }}>
           <p style={{
             fontSize: 10, fontWeight: 600, color: 'var(--text-muted)',
-            letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 7
+            letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 8
           }}>Theme</p>
-          <div style={{ display: 'flex', gap: 7 }}>
-            {THEMES.map((t) => (
-              <button
-                key={t.id}
-                title={t.label}
-                onClick={() => setActiveTheme(t.id)}
-                style={{
-                  width: 26, height: 26,
-                  borderRadius: '50%',
-                  background: t.color,
-                  border: activeTheme === t.id
-                    ? `2px solid white`
-                    : '2px solid transparent',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                  boxShadow: activeTheme === t.id
-                    ? `0 0 10px ${t.color}99`
-                    : 'none',
-                  transform: activeTheme === t.id ? 'scale(1.15)' : 'scale(1)',
-                  flexShrink: 0,
-                }}
-              />
-            ))}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 6 }}>
+            {THEMES.map((t) => {
+              const isActive = activeTheme === t.id;
+              return (
+                <button
+                  key={t.id}
+                  title={t.label}
+                  onClick={() => setActiveTheme(t.id)}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 7,
+                    padding: '7px 9px',
+                    borderRadius: 10,
+                    border: isActive
+                      ? `1.5px solid ${t.color1}88`
+                      : '1.5px solid var(--border-color)',
+                    background: isActive
+                      ? `linear-gradient(135deg, ${t.color1}22, ${t.color2}22)`
+                      : 'var(--bg-card)',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease',
+                    boxShadow: isActive ? `0 0 12px ${t.color1}44` : 'none',
+                    transform: isActive ? 'scale(1.03)' : 'scale(1)',
+                    position: 'relative',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {/* Gradient Swatch */}
+                  <div style={{
+                    width: 20, height: 20,
+                    borderRadius: 6,
+                    background: `linear-gradient(135deg, ${t.color1}, ${t.color2})`,
+                    flexShrink: 0,
+                    boxShadow: isActive ? `0 0 6px ${t.color1}88` : 'none',
+                  }} />
+                  <span style={{
+                    fontSize: 11,
+                    fontWeight: isActive ? 600 : 500,
+                    color: isActive ? t.color1 : 'var(--text-secondary)',
+                    whiteSpace: 'nowrap',
+                  }}>{t.label}</span>
+                  {isActive && (
+                    <span style={{
+                      marginLeft: 'auto',
+                      fontSize: 9,
+                      color: t.color1,
+                      fontWeight: 700,
+                    }}>✓</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
         </div>
 
