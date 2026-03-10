@@ -1,0 +1,56 @@
+# docker-compose.yml — Orchestrate the full DocuMind stack
+# 
+# WHY Docker Compose: Instead of running the backend and frontend in two separate
+# terminals with different commands, docker-compose starts everything together
+# with a single command: `docker-compose up`
+#
+# What runs:
+#   - backend: FastAPI on http://localhost:8000
+#   - frontend: React (Vite) on http://localhost:5173
+#
+# Shared volumes ensure files uploaded via the frontend persist across restarts.
+
+version: '3.9'
+
+services:
+  # ── Backend (Python FastAPI) ─────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: documind-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      # Persist uploads and FAISS index between container restarts
+      - ./data/uploads:/app/uploads
+      - ./data/faiss_store:/app/faiss_store
+    env_file:
+      - ./backend/.env       # Load OPENAI_API_KEY, JWT_SECRET, etc.
+    environment:
+      - UPLOAD_DIR=/app/uploads
+      - FAISS_INDEX_DIR=/app/faiss_store
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ── Frontend (React / Vite) ──────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: documind-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  uploads:
+  faiss_store:
