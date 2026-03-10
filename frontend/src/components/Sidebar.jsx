@@ -12,7 +12,14 @@ import { useState, useEffect, useRef } from 'react';
 import { documentsAPI } from '../api/client';
 import { addToast } from '../App';
 
-// ── File type icons ──────────────────────────────────────────────────────────
+// ── Themes ────────────────────────────────────────────────────────────────────
+const THEMES = [
+  { id: 'dark', label: '🌑 Dark', color: '#4f8ef7' },
+  { id: 'ocean', label: '🌊 Ocean', color: '#64ffda' },
+  { id: 'sunset', label: '🌅 Sunset', color: '#ff6b6b' },
+  { id: 'forest', label: '🌿 Forest', color: '#34d399' },
+];
+
 const FILE_ICONS = { pdf: '📄', docx: '📝', doc: '📝', csv: '📊' };
 
 function getFileIcon(filename) {
@@ -203,6 +210,15 @@ export default function Sidebar({ user, onLogout, selectedDocIds, onSelectionCha
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [activeTheme, setActiveTheme] = useState(
+    () => localStorage.getItem('documind_theme') || 'dark'
+  );
+
+  // Apply theme to <html> data-theme attribute whenever it changes
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', activeTheme);
+    localStorage.setItem('documind_theme', activeTheme);
+  }, [activeTheme]);
 
   const fetchDocs = async () => {
     setLoading(true);
@@ -281,7 +297,7 @@ export default function Sidebar({ user, onLogout, selectedDocIds, onSelectionCha
 
         {loading && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {[1,2,3].map((i) => (
+            {[1, 2, 3].map((i) => (
               <div key={i} className="skeleton" style={{ height: 56 }} />
             ))}
           </div>
@@ -329,17 +345,69 @@ export default function Sidebar({ user, onLogout, selectedDocIds, onSelectionCha
       <div style={{
         padding: '12px 14px',
         borderTop: '1px solid var(--border-color)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
       }}>
-        <div>
-          <p style={{ fontSize: 13, fontWeight: 500 }}>👤 {user}</p>
-          <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Logged in</p>
+        {/* Theme Switcher */}
+        <div style={{ marginBottom: 10 }}>
+          <p style={{
+            fontSize: 10, fontWeight: 600, color: 'var(--text-muted)',
+            letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 7
+          }}>Theme</p>
+          <div style={{ display: 'flex', gap: 7 }}>
+            {THEMES.map((t) => (
+              <button
+                key={t.id}
+                title={t.label}
+                onClick={() => setActiveTheme(t.id)}
+                style={{
+                  width: 26, height: 26,
+                  borderRadius: '50%',
+                  background: t.color,
+                  border: activeTheme === t.id
+                    ? `2px solid white`
+                    : '2px solid transparent',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                  boxShadow: activeTheme === t.id
+                    ? `0 0 10px ${t.color}99`
+                    : 'none',
+                  transform: activeTheme === t.id ? 'scale(1.15)' : 'scale(1)',
+                  flexShrink: 0,
+                }}
+              />
+            ))}
+          </div>
         </div>
-        <button className="btn btn-ghost" onClick={onLogout} style={{ fontSize: 12, padding: '6px 12px' }}>
-          Logout
-        </button>
+
+        {/* User + Logout */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div>
+            <p style={{ fontSize: 13, fontWeight: 500 }}>👤 {user}</p>
+            <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>Logged in</p>
+          </div>
+          <button className="btn btn-ghost" onClick={onLogout} style={{ fontSize: 12, padding: '6px 12px' }}>
+            Logout
+          </button>
+        </div>
+
+        {/* Built by Tanishq */}
+        <div style={{
+          marginTop: 10,
+          paddingTop: 10,
+          borderTop: '1px solid var(--border-color)',
+          textAlign: 'center',
+        }}>
+          <p style={{
+            fontSize: 11,
+            background: 'var(--accent-gradient)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            fontWeight: 600,
+            letterSpacing: '0.04em',
+          }}>
+            ✦ Built by Tanishq Varshney
+          </p>
+        </div>
       </div>
     </aside>
   );
