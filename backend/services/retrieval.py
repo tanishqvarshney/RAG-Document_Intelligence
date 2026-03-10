@@ -122,9 +122,31 @@ def answer_question(
 
     # ── Retrieve relevant chunks ───────────────────────────────────────────────
     logger.info(f"[RETRIEVE] Step 2/3: Searching FAISS for relevant chunks...")
-    from services.ingestion import get_all_documents
+    from services.ingestion import get_all_documents, get_document
     active_doc_ids = {doc["document_id"] for doc in get_all_documents()}
     valid_doc_ids = set(document_ids) if document_ids else active_doc_ids
+
+    # ── Metadata short-circuit for word/page count questions ──────────────────
+    METADATA_KEYWORDS = ["word count", "how many words", "word", "page count", "how many pages", "number of words", "number of pages"]
+    q_lower = question.lower()
+    if any(kw in q_lower for kw in METADATA_KEYWORDS):
+        target_docs = [get_document(doc_id) for doc_id in valid_doc_ids]
+        target_docs = [d for d in target_docs if d]
+        if target_docs:
+            doc_info_lines = []
+            for d in target_docs:
+                doc_info_lines.append(
+                    f"- **{d.get('original_filename')}**: "
+                    f"{d.get('word_count', 'Unknown')} words, "
+                    f"{d.get('page_count', 'Unknown')} pages"
+                )
+            answer = "Here are the document statistics based on your uploaded files:\n\n" + "\n".join(doc_info_lines)
+            sources = [{"document_id": d["document_id"], "filename": d["original_filename"], "page": 0, "excerpt": "Document metadata"} for d in target_docs]
+            return {
+                "answer": answer,
+                "sources": sources,
+                "latency_ms": int((time.time() - start_time) * 1000),
+            }
     
     try:
         # Fetch 4x more chunks than needed, so we can filter out deleted ones
@@ -145,10 +167,8 @@ def answer_question(
             raise RuntimeError(f"Document search failed: {str(e2)}")
 
     # ── Exact Filtering & Thresholding: Keep chunks from valid docs with good scores ─
-    # For FAISS with default settings, score is typically L2 distance (lower is better).
-    # A distance > 1.2 usually indicates the chunk is not highly semantically related.
-    # We will log the scores to help tune this threshold if needed.
-    MAX_DISTANCE = 1.0
+    # Raised to 1.5 to allow conversational/metadata queries to pass through.
+    MAX_DISTANCE = 1.5
     relevant_docs = []
     
     for doc, score in raw_results:
