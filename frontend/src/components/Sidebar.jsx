@@ -77,15 +77,16 @@ function DocumentUploader({ onUploaded }) {
   };
 
   const style = {
-    border: `2px dashed ${dragOver ? 'var(--accent-primary)' : 'var(--border-color)'}`,
+    border: `1px dashed ${dragOver ? 'var(--accent-primary)' : 'var(--border-color)'}`,
     borderRadius: 'var(--radius-md)',
-    padding: '20px 12px',
+    padding: '24px 16px',
     textAlign: 'center',
     cursor: uploading ? 'not-allowed' : 'pointer',
     transition: 'var(--transition)',
-    background: dragOver ? 'rgba(79,142,247,0.06)' : 'transparent',
+    background: dragOver ? 'rgba(0,113,227,0.05)' : 'var(--bg-tertiary)',
     position: 'relative',
     overflow: 'hidden',
+    boxShadow: dragOver ? 'var(--accent-glow)' : 'none',
   };
 
   return (
@@ -104,12 +105,12 @@ function DocumentUploader({ onUploaded }) {
         onChange={(e) => handleUpload(e.target.files[0])}
       />
       {uploading ? (
-        <div>
-          <div style={{ fontSize: 22, marginBottom: 8 }} className="animate-pulse">⚙️</div>
-          <p style={{ fontSize: 12, color: 'var(--text-secondary)', marginBottom: 8 }}>
-            Indexing <strong>{uploadName}</strong>...
+        <div className="animate-fade-in">
+          <div style={{ fontSize: 24, marginBottom: 10 }} className="animate-spin">⚙️</div>
+          <p style={{ fontSize: 13, color: 'var(--text-primary)', marginBottom: 8, fontWeight: 500 }}>
+            Indexing <strong>{uploadName}</strong>
           </p>
-          <div style={{ height: 4, background: 'var(--bg-card)', borderRadius: 2, overflow: 'hidden' }}>
+          <div style={{ height: 4, background: 'rgba(255,255,255,0.05)', borderRadius: 2, overflow: 'hidden', width: '80%', margin: '0 auto' }}>
             <div style={{
               height: '100%',
               width: `${progress}%`,
@@ -118,16 +119,16 @@ function DocumentUploader({ onUploaded }) {
               transition: 'width 0.3s ease',
             }} />
           </div>
-          <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 6 }}>{progress}% uploaded</p>
+          <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 8 }}>{progress}% completed</p>
         </div>
       ) : (
-        <>
-          <div style={{ fontSize: 28, marginBottom: 8 }}>📂</div>
-          <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>
-            {dragOver ? 'Drop to upload' : 'Drop file or click to browse'}
+        <div className="animate-fade-in">
+          <div style={{ fontSize: 32, marginBottom: 10, filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))' }}>📥</div>
+          <p style={{ fontSize: 13, color: 'var(--text-primary)', fontWeight: 500 }}>
+            {dragOver ? 'Release to upload' : 'Click or drag to upload'}
           </p>
-          <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 4 }}>PDF · DOCX · CSV · max 50MB</p>
-        </>
+          <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 6 }}>PDF, DOCX, or CSV up to 50MB</p>
+        </div>
       )}
     </div>
   );
@@ -156,31 +157,35 @@ function DocItem({ doc, selected, onSelect, onDelete }) {
   return (
     <div
       onClick={() => onSelect(doc.document_id)}
+      className="animate-fade-in"
       style={{
         display: 'flex',
         alignItems: 'flex-start',
-        gap: 10,
-        padding: '10px 12px',
+        gap: 12,
+        padding: '12px',
         borderRadius: 'var(--radius-md)',
         cursor: 'pointer',
         transition: 'var(--transition)',
-        border: `1px solid ${selected ? 'rgba(79,142,247,0.4)' : 'transparent'}`,
-        background: selected ? 'rgba(79,142,247,0.08)' : 'transparent',
-        animation: 'fadeIn 0.3s ease-out',
+        border: `1px solid ${selected ? 'var(--accent-primary)' : 'transparent'}`,
+        background: selected ? 'rgba(0,113,227,0.1)' : 'transparent',
+        marginBottom: 4,
       }}
     >
-      <span style={{ fontSize: 20, lineHeight: 1 }}>{getFileIcon(doc.original_filename)}</span>
+      <span style={{ fontSize: 20, lineHeight: 1, filter: selected ? 'none' : 'grayscale(0.5)' }}>
+        {getFileIcon(doc.original_filename)}
+      </span>
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{
           fontSize: 13,
           fontWeight: 500,
-          color: 'var(--text-primary)',
+          color: selected ? 'var(--text-primary)' : 'var(--text-secondary)',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
+          transition: 'color 0.2s ease',
         }}>{doc.original_filename}</p>
         <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 2 }}>
-          {doc.chunk_count} chunks · {doc.page_count} pages · {formatDate(doc.uploaded_at)}
+          {doc.chunk_count} chunks · {formatDate(doc.uploaded_at)}
         </p>
       </div>
       <button
@@ -192,14 +197,14 @@ function DocItem({ doc, selected, onSelect, onDelete }) {
           cursor: 'pointer',
           color: 'var(--text-muted)',
           fontSize: 14,
-          padding: '2px 4px',
-          borderRadius: 4,
+          padding: '4px',
+          borderRadius: 6,
           transition: 'var(--transition)',
           flexShrink: 0,
         }}
-        title="Delete document"
+        title="Delete"
       >
-        {deleting ? '⏳' : '🗑️'}
+        {deleting ? '⏳' : '×'}
       </button>
     </div>
   );
@@ -261,12 +266,21 @@ export default function Sidebar({ user, onLogout, selectedDocIds, onSelectionCha
       flexShrink: 0,
     }}>
       {/* Header */}
-      <div style={{ padding: '20px 18px 16px', borderBottom: '1px solid var(--border-color)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
-          <span style={{ fontSize: 24 }}>🧠</span>
+      <div style={{ padding: '24px 20px 20px', borderBottom: '1px solid var(--border-color)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 2 }}>
+          <div style={{
+            width: 36, height: 36,
+            background: 'var(--accent-gradient)',
+            borderRadius: 'var(--radius-md)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 20,
+            boxShadow: 'var(--accent-glow)',
+          }}>🧠</div>
           <div>
-            <h2 style={{ fontSize: 16, fontWeight: 700, letterSpacing: '-0.02em' }}>DocuMind</h2>
-            <p style={{ fontSize: 11, color: 'var(--text-muted)' }}>RAG Document Intelligence</p>
+            <h2 style={{ fontSize: 18, fontWeight: 700, letterSpacing: '-0.04em', color: '#ffffff' }}>DocuMind</h2>
+            <p style={{ fontSize: 11, color: 'var(--text-secondary)', fontWeight: 500 }}>AI DOCUMENT INTEL</p>
           </div>
         </div>
       </div>

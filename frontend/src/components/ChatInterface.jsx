@@ -20,7 +20,7 @@ function WelcomeScreen({ onSuggestion }) {
   ];
 
   return (
-    <div style={{
+    <div className="animate-fade-in" style={{
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -28,76 +28,59 @@ function WelcomeScreen({ onSuggestion }) {
       height: '100%',
       padding: '40px 24px',
       textAlign: 'center',
-      animation: 'fadeIn 0.5s ease-out',
     }}>
       <div style={{
-        width: 72,
-        height: 72,
+        width: 80,
+        height: 80,
         background: 'var(--accent-gradient)',
-        borderRadius: 20,
+        borderRadius: 24,
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        fontSize: 36,
-        marginBottom: 24,
+        fontSize: 40,
+        marginBottom: 28,
         boxShadow: 'var(--accent-glow)',
       }}>🧠</div>
-      <h2 style={{ fontSize: 22, fontWeight: 700, marginBottom: 8 }}>Ask anything about your documents</h2>
-      <p style={{ color: 'var(--text-secondary)', fontSize: 14, maxWidth: 400, lineHeight: 1.7 }}>
-        Upload a PDF, DOCX, or CSV in the sidebar, then ask questions in plain English.
-        DocuMind finds the relevant parts and generates an accurate, cited answer.
+      <h2 style={{ fontSize: 28, fontWeight: 700, marginBottom: 12, letterSpacing: '-0.04em' }}>Welcome to DocuMind</h2>
+      <p style={{ color: 'var(--text-secondary)', fontSize: 16, maxWidth: 480, lineHeight: 1.6, fontWeight: 400 }}>
+        An intelligent workspace for your documents. Upload files to get started with instant retrieval and AI analysis.
       </p>
       
-      <div style={{ marginTop: 32, width: '100%', maxWidth: 480 }}>
-        <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-          Try asking
+      <div style={{ marginTop: 40, width: '100%', maxWidth: 520 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-muted)', marginBottom: 16, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+          Suggested Queries
         </p>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
           {suggestions.map((s, i) => (
             <button
               key={i}
               onClick={() => onSuggestion(s)}
               style={{
-                padding: '12px 14px',
-                background: 'var(--bg-card)',
+                padding: '16px',
+                background: 'rgba(255,255,255,0.03)',
                 border: '1px solid var(--border-color)',
                 borderRadius: 'var(--radius-md)',
-                color: 'var(--text-secondary)',
+                color: 'var(--text-primary)',
                 fontSize: 13,
+                fontWeight: 500,
                 cursor: 'pointer',
                 textAlign: 'left',
                 transition: 'var(--transition)',
-                fontFamily: 'inherit',
                 lineHeight: 1.4,
               }}
               onMouseOver={(e) => {
-                e.currentTarget.style.borderColor = 'var(--border-hover)';
-                e.currentTarget.style.background = 'var(--bg-card-hover)';
-                e.currentTarget.style.color = 'var(--text-primary)';
+                e.currentTarget.style.borderColor = 'var(--accent-primary)';
+                e.currentTarget.style.background = 'rgba(0,113,227,0.05)';
               }}
               onMouseOut={(e) => {
                 e.currentTarget.style.borderColor = 'var(--border-color)';
-                e.currentTarget.style.background = 'var(--bg-card)';
-                e.currentTarget.style.color = 'var(--text-secondary)';
+                e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
               }}
             >
               "{s}"
             </button>
           ))}
         </div>
-      </div>
-
-      <div style={{
-        marginTop: 40,
-        display: 'flex',
-        gap: 20,
-        fontSize: 12,
-        color: 'var(--text-muted)',
-      }}>
-        <span>⚡ Sub-100ms retrieval</span>
-        <span>📎 Source citations</span>
-        <span>🔒 JWT secured</span>
-        <span>🔍 FAISS search</span>
       </div>
     </div>
   );
@@ -177,38 +160,39 @@ export default function ChatInterface({ selectedDocIds }) {
     }}>
       {/* Header */}
       <div style={{
-        padding: '16px 24px',
+        padding: '18px 28px',
         borderBottom: '1px solid var(--border-color)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexShrink: 0,
-        background: 'rgba(7, 11, 20, 0.5)',
-        backdropFilter: 'blur(8px)',
+        background: 'rgba(0,0,0,0.4)',
+        backdropFilter: 'blur(20px)',
       }}>
         <div>
-          <h1 style={{ fontSize: 16, fontWeight: 600 }}>
-            Chat with Documents
+          <h1 style={{ fontSize: 17, fontWeight: 700, letterSpacing: '-0.02em' }}>
+            Document Workspace
             {selectedDocIds.length > 0 && (
               <span style={{
-                marginLeft: 10,
-                background: 'rgba(79,142,247,0.15)',
+                marginLeft: 12,
+                background: 'rgba(0,113,227,0.15)',
                 color: 'var(--accent-primary)',
-                borderRadius: 20,
-                padding: '2px 10px',
-                fontSize: 12,
+                borderRadius: 8,
+                padding: '3px 10px',
+                fontSize: 11,
+                fontWeight: 600,
               }}>
-                {selectedDocIds.length} selected
+                {selectedDocIds.length} FILES
               </span>
             )}
           </h1>
-          <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 1 }}>
-            Powered by GPT-4o + FAISS + LangChain
+          <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 2, fontWeight: 500 }}>
+            Powered by Gemini 2.0 Flash + FAISS
           </p>
         </div>
         {messages.length > 0 && (
-          <button className="btn btn-ghost" onClick={clearChat} style={{ fontSize: 12 }}>
-            🗑️ Clear chat
+          <button className="btn btn-ghost" onClick={clearChat} style={{ fontSize: 11, fontWeight: 600, padding: '6px 14px' }}>
+            ⟲ Reset session
           </button>
         )}
       </div>
@@ -232,22 +216,23 @@ export default function ChatInterface({ selectedDocIds }) {
 
       {/* Input Area */}
       <div style={{
-        padding: '16px 24px 24px',
+        padding: '24px 32px 32px',
         borderTop: '1px solid var(--border-color)',
         flexShrink: 0,
-        background: 'rgba(7, 11, 20, 0.6)',
-        backdropFilter: 'blur(8px)',
+        background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)',
       }}>
         <div style={{
           display: 'flex',
-          gap: 10,
+          gap: 12,
           alignItems: 'flex-end',
-          background: 'var(--bg-input)',
+          background: 'rgba(255,255,255,0.05)',
           border: '1px solid var(--border-color)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '10px 12px',
+          borderRadius: '20px',
+          padding: '12px 16px',
           transition: 'var(--transition)',
-          boxShadow: loading ? 'var(--accent-glow)' : 'none',
+          boxShadow: loading ? 'var(--accent-glow)' : 'var(--shadow-md)',
+          maxWidth: 900,
+          margin: '0 auto',
         }}
         onFocus={(e) => e.currentTarget.style.borderColor = 'var(--accent-primary)'}
         onBlur={(e) => e.currentTarget.style.borderColor = 'var(--border-color)'}
@@ -258,10 +243,10 @@ export default function ChatInterface({ selectedDocIds }) {
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
             placeholder={loading
-              ? 'Thinking...'
+              ? 'Analyzing context...'
               : selectedDocIds.length > 0
-                ? `Ask a question about the ${selectedDocIds.length} selected document(s)...`
-                : 'Ask a question about your documents...'
+                ? `Message selected context (${selectedDocIds.length} files)...`
+                : 'Message your document library...'
             }
             disabled={loading}
             rows={1}
@@ -272,16 +257,16 @@ export default function ChatInterface({ selectedDocIds }) {
               outline: 'none',
               color: 'var(--text-primary)',
               font: 'inherit',
-              fontSize: 14,
+              fontSize: 15,
               lineHeight: 1.6,
               resize: 'none',
-              maxHeight: 120,
+              maxHeight: 160,
               overflowY: 'auto',
-              padding: 0,
+              padding: '2px 0',
             }}
             onInput={(e) => {
               e.target.style.height = 'auto';
-              e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+              e.target.style.height = Math.min(e.target.scrollHeight, 160) + 'px';
             }}
           />
           <button
@@ -289,23 +274,27 @@ export default function ChatInterface({ selectedDocIds }) {
             disabled={!input.trim() || loading}
             className="btn btn-primary"
             style={{
-              padding: '8px 16px',
-              borderRadius: 'var(--radius-md)',
-              fontSize: 14,
+              width: 38,
+              height: 38,
+              borderRadius: 12,
+              padding: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               flexShrink: 0,
               alignSelf: 'flex-end',
+              fontSize: 18,
             }}
           >
             {loading ? (
-              <span className="animate-spin" style={{ display: 'inline-block' }}>⚙️</span>
+              <span className="animate-spin">⚙️</span>
             ) : (
-              '→ Send'
+              '↑'
             )}
           </button>
         </div>
-        <p style={{ fontSize: 11, color: 'var(--text-muted)', marginTop: 8, textAlign: 'center' }}>
-          Press <kbd style={{ background: 'var(--bg-card)', padding: '1px 4px', borderRadius: 3, border: '1px solid var(--border-color)' }}>Enter</kbd> to send · 
-          <kbd style={{ background: 'var(--bg-card)', padding: '1px 4px', borderRadius: 3, border: '1px solid var(--border-color)', margin: '0 4px' }}>Shift+Enter</kbd> for new line
+        <p style={{ fontSize: 11, color: 'var(--text-secondary)', marginTop: 12, textAlign: 'center', fontWeight: 500 }}>
+          <span style={{ opacity: 0.6 }}>Gemini may provide inaccurate info. Verify important facts.</span>
         </p>
       </div>
     </main>

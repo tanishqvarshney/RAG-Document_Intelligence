@@ -38,6 +38,26 @@
 
 ---
 
+## 🎨 Premium UI Preview
+
+DocuMind features a premium, Apple-inspired aesthetic with true black dark mode, glassmorphism panels, and smooth animations.
+
+<div align="center">
+  <img src="docs/screenshots/login.png" width="400" alt="DocuMind Login Screen">
+  <br>
+  <em>Modern, secure login experience</em>
+</div>
+
+<br>
+
+<div align="center">
+  <img src="docs/screenshots/chat.png" width="800" alt="DocuMind Chat Workspace">
+  <br>
+  <em>Intelligent Document Workspace with Gemini 2.0 Flash retrieval</em>
+</div>
+
+---
+
 ## 🏗️ Architecture
 
 ```

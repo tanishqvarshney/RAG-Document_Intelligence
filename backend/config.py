@@ -26,7 +26,7 @@ FAISS_INDEX_DIR.mkdir(parents=True, exist_ok=True)
 # ─── Google Gemini ────────────────────────────────────────────────────────────
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY", "")
 EMBEDDING_MODEL = "models/gemini-embedding-001"   # For turning text → numbers
-CHAT_MODEL = "gemini-2.0-flash"                 # For generating answers (1500 req/day free tier)
+CHAT_MODEL = "gemini-2.5-flash"                 # For generating answers (most widely available free tier)
 
 # ─── Security ─────────────────────────────────────────────────────────────────
 JWT_SECRET = os.getenv("JWT_SECRET", "documind-dev-secret-change-in-production")

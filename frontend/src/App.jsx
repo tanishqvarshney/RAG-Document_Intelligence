@@ -56,12 +56,12 @@ function LoginScreen({ onLogin }) {
 
   return (
     <div className="login-page">
-      <div className="login-card">
+      <div className="login-card animate-fade-in">
         <div className="login-logo">
           <div className="login-logo-icon">🧠</div>
           <div>
-            <h1>DocuMind</h1>
-            <p className="login-subtitle">AI-Powered Document Intelligence</p>
+            <h1 style={{ fontSize: 28, letterSpacing: '-0.05em' }}>DocuMind</h1>
+            <p className="login-subtitle">AI DOCUMENT INTELLIGENCE</p>
           </div>
         </div>
 
@@ -77,9 +77,10 @@ function LoginScreen({ onLogin }) {
               onChange={(e) => setUsername(e.target.value)}
               required
               autoFocus
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)' }}
             />
           </div>
-          <div className="form-group">
+          <div className="form-group" style={{ marginBottom: 8 }}>
             <label className="form-label">Password</label>
             <input
               className="input"
@@ -88,24 +89,23 @@ function LoginScreen({ onLogin }) {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
+              style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid var(--border-color)' }}
             />
           </div>
           <button
             className="btn btn-primary"
             type="submit"
             disabled={loading}
-            style={{ width: '100%', justifyContent: 'center', padding: '12px' }}
+            style={{ width: '100%', justifyContent: 'center', padding: '14px', marginTop: 16, fontSize: 15, borderRadius: 12 }}
           >
             {loading ? (
-              <>
-                <span className="animate-spin" style={{ display: 'inline-block' }}>⚙️</span> Signing in...
-              </>
+              <span className="animate-spin">⚙️</span>
             ) : (
-              '→ Sign In'
+              'Sign In'
             )}
           </button>
-          <div className="login-hint">
-            Demo credentials: <strong>admin / admin123</strong> or <strong>demo / demo123</strong>
+          <div className="login-hint" style={{ marginTop: 24, opacity: 0.8 }}>
+            Try <strong>admin / admin123</strong>
           </div>
         </form>
       </div>
