@@ -154,23 +154,6 @@ Frontend is running at: `http://localhost:5173`
 
 ---
 
-## 🐳 Docker Deployment (Recommended)
-
-Run the entire stack (backend + frontend) with a single command:
-
-```bash
-# From the project root
-docker compose up --build
-```
-
-| Service | URL |
-|---------|-----|
-| Frontend | http://localhost:5173 |
-| Backend API | http://localhost:8000 |
-| API Docs | http://localhost:8000/docs |
-
----
-
 ## 📖 API Reference
 
 All endpoints (except `/api/auth/login` and `/api/health`) require a `Bearer` JWT token in the `Authorization` header.
