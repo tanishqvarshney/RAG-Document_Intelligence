@@ -38,7 +38,7 @@
 
 ---
 
-## 🎨 Premium UI Preview
+## 🎨 UI Preview
 
 DocuMind features a premium, Apple-inspired aesthetic with true black dark mode, glassmorphism panels, and smooth animations.
 
